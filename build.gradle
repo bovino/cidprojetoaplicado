@@ -1,0 +1,53 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.4.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'br.igti.tcc'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+ext {
+	springCloudVersion = 'Finchley.RELEASE'
+}
+
+dependencies {
+	// compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile('org.springframework.boot:spring-boot-starter-jersey')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud:spring-cloud-starter-config')
+	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+	compile('org.codehaus.groovy:groovy-all')
+	compile group: 'org.json', name: 'json', version: '20180130'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
+	compile group: 'com.fasterxml.jackson.dataformat',name: 'jackson-dataformat-yaml', version: '2.9.2'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.springframework.security:spring-security-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
