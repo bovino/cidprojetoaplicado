@@ -19,12 +19,17 @@ class DadosGovBrColetorContratos implements ColetorInterface {
     @Value('${url.contratos.base}')
     private String urlContratosBase
 
+    @Value('${url.contratos.completa}')
+    private String urlContratosCompleta
+
+    private String complementoUrl = "contratos.json?order=asc&order_by=data_assinatura&offset="
+
     private Integer offsetAtual = 0
 
     @Scheduled(fixedRate = 50000L)
      void coletar() {
 
-        log.info("URL: " + this.urlContratos + this.offsetAtual)
+        log.info("URL: " + this.urlContratosCompleta + this.offsetAtual)
 
         ObjectMapper mapper = new ObjectMapper()
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -38,7 +43,7 @@ class DadosGovBrColetorContratos implements ColetorInterface {
 
         JsonNode rootNode
         URL myURL = new URL(this.urlContratosBase)
-        URL endpoint = new URL(myURL, "contratos.json?order=asc&order_by=data_assinatura&offset=" + this.offsetAtual)
+        URL endpoint = new URL(myURL, this.complementoUrl + this.offsetAtual)
         rootNode = mapper.readTree(endpoint)
         JsonNode contratosNode = rootNode.get("_embedded").get("contratos")
         println(' OFFSET ATUAL ::: ' + this.offsetAtual)
