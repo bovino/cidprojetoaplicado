@@ -15,3 +15,7 @@ Tecnologias utilizadas:
 - Tem teste: Spock, Junit, JMeter
 - API Dados.gov.br
 - API CNJ
+
+No IntelliJ, usar o Auto Import Gradle Project, marcar a opçao de usar o gradle wrapper.
+
+Indicar a JDK 8 para o projeto (não foi testado em versões mais novas do JDK).
