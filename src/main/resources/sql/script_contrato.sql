@@ -1,5 +1,5 @@
 CREATE TABLE contrato (  
-  identificador INT(11) NOT NULL,
+  identificador BIGINT(20) NOT NULL,
   uasg VARCHAR(30),
   codigo_contrato VARCHAR(30),
   modalidade_licitacao VARCHAR(30),
