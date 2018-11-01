@@ -23,6 +23,14 @@ Persistência em:
 - ElasticSearch
 - MySQL 5+ (testando em MySQL 8 Community Edition) -> scripts sql disponiveis na pasta src/main/resources/sql 
 
+Configurações: no arquivo application.properties se configura
+
+- URLs de acesso aos endpoints de coleta de dados
+- configs de acesso ao MySQL e MongoDB
+- definir cada dataset onde vai armazenar/persistir dados (setar mysql ou mongodb)
+
+IMPORTAR PROJETO (IDE INTELLIJ)
+
 No IntelliJ, usar o Auto Import Gradle Project, marcar a opçao de usar o gradle wrapper.
 
 Indicar a JDK 8 para o projeto (não foi testado em versões mais novas do JDK).
