@@ -1,5 +1,5 @@
 # cidprojetoaplicado
-Projeto de coleta, pré-processamento e análise de dados públicos de compras governamentais, inicialmente usando as APIs públicas Dados.gov.br e CNJ
+Projeto de coleta, pré-processamento e análise de dados públicos de compras governamentais, inicialmente usando as APIs Dados.gov.br, ReceitaWS e API CNJ.
 
 Vai lidar com datasets um pouco grandes, então pode ser uma boa idéia aumentar a memória. Usar XMS de 512 mb e XMX de 2048 é um bom ponto de partida.
 
@@ -7,14 +7,21 @@ Tecnologias utilizadas:
 
 - Gradle
 - Groovy
-- SpringBoot 2.0.4
-- SpringCloud
+- SpringBoot 2.0.6
+- SpringCloud (Finchley)
 - SpringData
 - SpringSecurity
 - Jackson
 - Tem teste: Spock, Junit, JMeter
-- API Dados.gov.br
-- API CNJ
+- API Dados.gov.br - Contratos
+- API Dados.gov.br - Compras sem licitação
+- API Dados.gov.br - Licitações
+- API CNJ (possivelmente será descartado)
+
+Persistência em:
+- MongoDB 4.0.3 (testado em Community Edition)
+- ElasticSearch
+- MySQL 5+ (testando em MySQL 8 Community Edition) -> scripts sql disponiveis na pasta src/main/resources/sql 
 
 No IntelliJ, usar o Auto Import Gradle Project, marcar a opçao de usar o gradle wrapper.
 
