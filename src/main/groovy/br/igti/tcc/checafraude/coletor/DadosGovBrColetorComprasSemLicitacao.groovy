@@ -1,8 +1,8 @@
 package br.igti.tcc.checafraude.coletor
 
 import br.igti.tcc.checafraude.entidades.CompraSemLicitacaoEntidade
-import br.igti.tcc.checafraude.entidades.ContratoEntidade
 import br.igti.tcc.checafraude.service.CompraSemLicitacaoService
+import br.igti.tcc.checafraude.util.JsonNodeUtil
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,6 +26,9 @@ class DadosGovBrColetorComprasSemLicitacao implements ColetorInterface {
 
     @Autowired
     CompraSemLicitacaoService service
+
+    @Autowired
+    JsonNodeUtil jsonNodeUtil
 
     @Scheduled(fixedRate = 3000L)
      void coletar() {
@@ -64,20 +67,20 @@ class DadosGovBrColetorComprasSemLicitacao implements ColetorInterface {
 
                 CompraSemLicitacaoEntidade entidade = new CompraSemLicitacaoEntidade()
                 entidade.codOrgao = Long.valueOf(meuNoAtual.get('co_orgao').textValue())
-                entidade.codModalidadeLicitacao = checarNodeNulo(meuNoAtual.get('co_modalidade_licitacao'))
-                entidade.codUasg = checarNodeNulo(meuNoAtual.get('co_uasg'))
-                entidade.numeroProcesso = checarNodeNulo(meuNoAtual.get('nu_processo'))
-                entidade.valorEstimado = checarNodeNulo(meuNoAtual.get('vr_estimado'))
-                entidade.objetoLicitacao = checarNodeNulo(meuNoAtual.get('ds_objeto_licitacao'))
-                entidade.fundamentoLegal = checarNodeNulo(meuNoAtual.get('ds_fundamento_legal'))
-                entidade.justificativa = checarNodeNulo(meuNoAtual.get('ds_justificativa'))
-                entidade.dtRatificacao = checarNodeNulo(meuNoAtual.get('dtRatificacao'))
-                entidade.dtPublicacao = checarNodeNulo(meuNoAtual.get('dtPublicacao'))
-                entidade.dtDeclaracaoDispensa = checarNodeNulo(meuNoAtual.get('dtDeclaracaoDispensa'))
-                entidade.nomeResponsavelDeclaracaoDispensa = checarNodeNulo(meuNoAtual.get('no_responsavel_decl_disp'))
-                entidade.cargoResponsavelDeclaracaoDispensa = checarNodeNulo(meuNoAtual.get('no_cargo_resp_decl_disp'))
-                entidade.nomeResponsavelRatificacao = checarNodeNulo(meuNoAtual.get('no_responsavel_ratificacao'))
-                entidade.cargoResponsavelRatificacao = checarNodeNulo(meuNoAtual.get('no_cargo_resp_ratificacao'))
+                entidade.codModalidadeLicitacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('co_modalidade_licitacao'))
+                entidade.codUasg = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('co_uasg'))
+                entidade.numeroProcesso = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('nu_processo'))
+                entidade.valorEstimado = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('vr_estimado'))
+                entidade.objetoLicitacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_objeto_licitacao'))
+                entidade.fundamentoLegal = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_fundamento_legal'))
+                entidade.justificativa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_justificativa'))
+                entidade.dtRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtRatificacao'))
+                entidade.dtPublicacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtPublicacao'))
+                entidade.dtDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtDeclaracaoDispensa'))
+                entidade.nomeResponsavelDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_responsavel_decl_disp'))
+                entidade.cargoResponsavelDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_cargo_resp_decl_disp'))
+                entidade.nomeResponsavelRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_responsavel_ratificacao'))
+                entidade.cargoResponsavelRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_cargo_resp_ratificacao'))
 
                 // service.saveAndFlush(entidade) insert em lote provavelmente mais rapido do que insert um por um
                 // (comparar desempenho e quantificar a diferença?)
@@ -92,13 +95,4 @@ class DadosGovBrColetorComprasSemLicitacao implements ColetorInterface {
         this.offsetAtual += 500
     }
 
-    private String checarNodeNulo(JsonNode no){
-        if( no == null ){
-            return ''
-        } else if(no.isTextual()){ // nao é nulo mas é nó textual
-            return no.textValue() != null ? no.textValue() : ''
-        } else { // nao é nulo e NAO é um nó textual
-            return no.asText() != null ? no.asText() : ''
-        }
-    }
 }

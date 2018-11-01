@@ -2,6 +2,7 @@ package br.igti.tcc.checafraude.coletor
 
 import br.igti.tcc.checafraude.entidades.ContratoEntidade
 import br.igti.tcc.checafraude.service.ContratoService
+import br.igti.tcc.checafraude.util.JsonNodeUtil
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,6 +26,9 @@ class DadosGovBrColetorContratos implements ColetorInterface {
 
     @Autowired
     ContratoService service
+
+    @Autowired
+    JsonNodeUtil jsonNodeUtil
 
     @Scheduled(fixedRate = 3000L)
      void coletar() {
@@ -63,21 +67,21 @@ class DadosGovBrColetorContratos implements ColetorInterface {
 
                 ContratoEntidade entidade = new ContratoEntidade()
                 entidade.identificador = Long.valueOf(meuNoAtual.get('identificador').textValue())
-                entidade.objeto = checarNodeNulo(meuNoAtual.get('objeto'))
-                entidade.uasg = checarNodeNulo(meuNoAtual.get('uasg'))
-                entidade.valorInicial = checarNodeNulo(meuNoAtual.get('valor_inicial'))
-                entidade.numeroAditivo = checarNodeNulo(meuNoAtual.get('numero_aditivo'))
-                entidade.cnpjContratada = checarNodeNulo(meuNoAtual.get('cnpj_contratada'))
+                entidade.objeto = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('objeto'))
+                entidade.uasg = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('uasg'))
+                entidade.valorInicial = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('valor_inicial'))
+                entidade.numeroAditivo = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('numero_aditivo'))
+                entidade.cnpjContratada = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('cnpj_contratada'))
 
                 entidade.numero = checarNodeNulo(meuNoAtual.get('numero'))
-                entidade.numeroAditivo = checarNodeNulo(meuNoAtual.get('numero_aditivo'))
-                entidade.codigoContrato = checarNodeNulo(meuNoAtual.get('codigo_contrato'))
-                entidade.dataAssinatura = checarNodeNulo(meuNoAtual.get('data_assinatura'))
-                entidade.dataInicioVigencia = checarNodeNulo(meuNoAtual.get('data_inicio_vigencia'))
-                entidade.dataTerminoVigencia = checarNodeNulo(meuNoAtual.get('data_termino_vigencia'))
-                entidade.modalidadeLicitacao = checarNodeNulo(meuNoAtual.get('modalidade_licitacao'))
-                entidade.licitacaoAssociada = checarNodeNulo(meuNoAtual.get('licitacao_associada'))
-                entidade.fundamentoLegal = checarNodeNulo(meuNoAtual.get('fundamento_legal'))
+                entidade.numeroAditivo = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('numero_aditivo'))
+                entidade.codigoContrato = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('codigo_contrato'))
+                entidade.dataAssinatura = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('data_assinatura'))
+                entidade.dataInicioVigencia = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('data_inicio_vigencia'))
+                entidade.dataTerminoVigencia = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('data_termino_vigencia'))
+                entidade.modalidadeLicitacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('modalidade_licitacao'))
+                entidade.licitacaoAssociada = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('licitacao_associada'))
+                entidade.fundamentoLegal = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('fundamento_legal'))
 
                 // service.saveAndFlush(entidade) insert em lote provavelmente mais rapido do que insert um por um
                 // (comparar desempenho e quantificar a diferença?)
