@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 
 //Classe responsavel pela coleta de dados de compras sem licitação na API Dados.gov.br
 @Component
-class DadosGovBrColetorComprasSemLicitacao implements ColetorInterface {
+class DadosGovBrColetorComprasSemLicitacao extends ColetorBase implements ColetorInterface {
 
     private static final Logger log = LoggerFactory.getLogger(DadosGovBrColetorComprasSemLicitacao.class)
 
