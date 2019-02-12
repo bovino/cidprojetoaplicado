@@ -55,4 +55,9 @@ class CompraSemLicitacaoEntidade {
   String cargoResponsavelRatificacao // Subsecretário de Assuntos Administrativos""
 
   String dtPublicacao
+
+  @Override
+  String toString() {
+    return "CompraSemLicitacao{" + "identificador=" + id + ", valorEstimado=" + valorEstimado + '}'
+  }
 }
