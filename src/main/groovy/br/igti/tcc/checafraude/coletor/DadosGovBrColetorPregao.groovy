@@ -52,7 +52,7 @@ class DadosGovBrColetorPregao extends ColetorBase implements ColetorInterface {
 
             JsonNode rootNode
             URL myURL = new URL(this.urlPregao)
-            URL endpoint = new URL(myURL, "?order=asc&order_by=dt_publicacao&offset=" + this.offsetAtual)
+            URL endpoint = new URL(myURL, "?order=asc&order_by=dt_data_edital&offset=" + this.offsetAtual)
             rootNode = mapper.readTree(endpoint)
             JsonNode pregoesNode = rootNode.get("_embedded").get("pregoes")
             println(' OFFSET ATUAL ::: ' + this.offsetAtual)
