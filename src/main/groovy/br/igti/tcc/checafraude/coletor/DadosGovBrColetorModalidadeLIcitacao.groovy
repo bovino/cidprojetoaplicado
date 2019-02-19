@@ -30,7 +30,7 @@ class DadosGovBrColetorModalidadeLIcitacao extends ColetorBase implements Coleto
     @Autowired
     JsonNodeUtil jsonNodeUtil
 
-    @Scheduled(fixedRate = 3000L)
+    @Scheduled(fixedRate = 300000L)
      void coletar() {
 
         log.info(" Coletor de modalidade de licitacao")
