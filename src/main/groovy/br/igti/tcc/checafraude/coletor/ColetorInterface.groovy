@@ -1,6 +1,7 @@
 package br.igti.tcc.checafraude.coletor
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 
 interface ColetorInterface {
 
@@ -18,4 +19,7 @@ interface ColetorInterface {
 
   /* Recebe o JsonNode root e o percorre, executando o processamento, análise ou armazenamento dos dados para análises e processamentos posteriores */
   public void processarDados(JsonNode meuNoAtual)
+
+  /* Monta um ObjectMapper com parametros para processar o JSON retornado */
+  public ObjectMapper montarObjectMapper()
 }
