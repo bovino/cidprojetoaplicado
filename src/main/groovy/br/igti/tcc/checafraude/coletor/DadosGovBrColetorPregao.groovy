@@ -101,4 +101,34 @@ class DadosGovBrColetorPregao extends ColetorBase implements ColetorInterface {
 
         this.offsetAtual += 500
     }
+
+    @Override
+    void finalizarColeta() {
+
+    }
+
+    @Override
+    void finalizarProcessamento() {
+
+    }
+
+    @Override
+    void consultaJson() {
+
+    }
+
+    @Override
+    void registrarErrosColeta() {
+
+    }
+
+    @Override
+    void processarDados(JsonNode meuNoAtual) {
+
+    }
+
+    @Override
+    ObjectMapper montarObjectMapper() {
+        return null
+    }
 }
