@@ -1,12 +1,11 @@
 package br.igti.tcc.checafraude.coletor
 
 import br.igti.tcc.checafraude.entidades.GrupoMaterialEntidade
-import br.igti.tcc.checafraude.service.PregaoService
+import br.igti.tcc.checafraude.service.GrupoMaterialService
 import br.igti.tcc.checafraude.util.JsonNodeUtil
-import com.fasterxml.jackson.databind.DeserializationFeature
+import br.igti.tcc.checafraude.util.ObjectMapperUtil
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,105 +24,95 @@ class DadosGovBrColetorGrupoMaterial extends ColetorBase implements ColetorInter
     private Integer offsetAtual = 0
 
     @Autowired
-    PregaoService service
+    GrupoMaterialService service
 
     @Autowired
     JsonNodeUtil jsonNodeUtil
 
     @Scheduled(fixedRate = 3000L)
-     void coletar() {
+    void coletar() {
 
-        log.info(" Coletor de pregoes")
-
+        log.info(" Coletor de grupos de materiais")
         log.info("URL: " + this.urlGrupo + this.offsetAtual)
-
-        ObjectMapper mapper = new ObjectMapper()
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        mapper.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, false)
-        mapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false)
-        mapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false)
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
 
         // por enquanto limitar em 10 mil registros, apenas para impl da prova de conceito do orientador
         if(this.offsetAtual < 100000) {
-
-            JsonNode rootNode
-            URL myURL = new URL(this.urlGrupo)
-            URL endpoint = new URL(myURL, "?order=asc&order_by=codigo&offset=" + this.offsetAtual)
-            rootNode = mapper.readTree(endpoint)
-            JsonNode pregoesNode = rootNode.get("_embedded").get("grupos")
-            println(' OFFSET ATUAL ::: ' + this.offsetAtual)
-            println(' Pregões processados ::: ' + pregoesNode.size())
-            println(' Primeiro Pregão processado ::: ' + pregoesNode.get(0).get("numero"))
-            println(' Último pregão processado ::: ' + pregoesNode.get(pregoesNode.size() - 1).get("numero"))
-
-            //adicionar logica de pré-processamento e armazenamento aqui
-
-            //persistir contrato apenas os campos que importam para análise posterior
-            List<GrupoMaterialEntidade> listaPregoes = new ArrayList<GrupoMaterialEntidade>()
-
-            for (JsonNode meuNoAtual : pregoesNode) {
-
-                GrupoMaterialEntidade entidade = new GrupoMaterialEntidade()
-                entidade.codigo = meuNoAtual.get('codigo')
-                entidade.descricao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('descricao'))
-
-                /* entidade.numeroProcesso = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('nu_processo'))
-                entidade.valorEstimado = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('vr_estimado'))
-                entidade.objetoLicitacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_objeto_licitacao'))
-                entidade.fundamentoLegal = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_fundamento_legal'))
-                entidade.justificativa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('ds_justificativa'))
-                entidade.dtRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtRatificacao'))
-                entidade.dtPublicacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtPublicacao'))
-                entidade.dtDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('dtDeclaracaoDispensa'))
-                entidade.nomeResponsavelDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_responsavel_decl_disp'))
-                entidade.cargoResponsavelDeclaracaoDispensa = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_cargo_resp_decl_disp'))
-                entidade.nomeResponsavelRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_responsavel_ratificacao'))
-                entidade.cargoResponsavelRatificacao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('no_cargo_resp_ratificacao')) */
-
-                // service.saveAndFlush(entidade) insert em lote provavelmente mais rapido do que insert um por um
-                // (comparar desempenho e quantificar a diferença?)
-                listaPregoes.add(entidade)
-            }
-
-            if (listaPregoes.size() > 0) { //insert em lote a cada "pagina" / offset do JSON obtido
-                service.saveAll(listaPregoes)
-            }
+            JsonNode grupoMaterialNode = this.consultaJson()
+            this.finalizarColeta(grupoMaterialNode)
+            this.processarDados(grupoMaterialNode)
+            this.finalizarProcessamento()
         }
 
         this.offsetAtual += 500
     }
 
     @Override
-    void finalizarColeta() {
-
+    void finalizarColeta( JsonNode node ) {
+        println('COLETA DE GRUPOS DE MATERIAIS FINALIZADA')
+        println(' OFFSET ATUAL ::: ' + this.offsetAtual)
+        println(' Grupos de materiais processados ::: ' + node.size())
+        println(' Primeiro Grupo de material processado ::: ' + node.get(0).get("numero"))
+        println(' Último grupo de material processado ::: ' + node.get(node.size() - 1).get("numero"))
     }
 
     @Override
     void finalizarProcessamento() {
-
+        println('PROCESSAMENTO DE GRUPOS DE MATERIAIS FINALIZADA')
     }
 
     @Override
-    void consultaJson() {
-
+    JsonNode consultaJson() {
+        JsonNode rootNode
+        URL myURL = new URL(this.urlGrupo)
+        URL endpoint = new URL(myURL, "?order=asc&order_by=codigo&offset=" + this.offsetAtual)
+        rootNode = montarObjectMapper().readTree(endpoint)
+        JsonNode grupoMaterialNode = rootNode.get("_embedded").get("grupos")
+        return grupoMaterialNode
     }
 
     @Override
-    void registrarErrosColeta() {
-
+    void registrarErrosColeta(String detalhesErro) {
+        // registrar erros ocorridos no MongoDB
     }
 
     @Override
-    void processarDados(JsonNode meuNoAtual) {
+    void processarDados(JsonNode jsonNodeParaPercorrer) {
 
+        //persistir contrato apenas os campos que importam para análise posterior
+        List<GrupoMaterialEntidade> listaGruposMateriais = new ArrayList<GrupoMaterialEntidade>()
+
+        for (JsonNode meuNoAtual : jsonNodeParaPercorrer) {
+
+            try {
+
+                GrupoMaterialEntidade entidade = new GrupoMaterialEntidade()
+                entidade.codigo = meuNoAtual.get('codigo')
+                entidade.descricao = jsonNodeUtil.checarNodeNulo(meuNoAtual.get('descricao'))
+
+                // service.saveAndFlush(entidade) insert em lote provavelmente mais rapido do que insert um por um
+                // (comparar desempenho e quantificar a diferença?)
+                listaGruposMateriais.add(entidade)
+            }
+
+            catch( Exception ex ){
+              this.registrarErrosColeta( this.getClass().getCanonicalName() + ' - ' + ex.getMessage())
+            }
+        }
+
+        if (listaGruposMateriais.size() > 0) {
+            //insert em lote a cada "pagina" / offset do JSON obtido
+            // talvez depois alterar para permitir registrar erro em registro especifico
+            // porem pode ficar um pouco mais lento do que salvar em lote
+            try {
+                service.saveAll(listaGruposMateriais)
+            } catch (Exception ex){
+                this.registrarErrosColeta( this.getClass().getCanonicalName() + ' - ' + ex.getMessage())
+            }
+        }
     }
 
     @Override
     ObjectMapper montarObjectMapper() {
-        return null
+        return ObjectMapperUtil.getDefaultObjectMapper()
     }
 }
