@@ -78,7 +78,8 @@ class DadosGovBrColetorGrupoMaterial extends ColetorBase implements ColetorInter
     @Override
     void processarDados(JsonNode jsonNodeParaPercorrer) {
 
-        //persistir contrato apenas os campos que importam para análise posterior
+        // transforma o JSONNode em entidade JPA e depois persiste
+        //persistir apenas os campos que importam para análise posterior
         List<GrupoMaterialEntidade> listaGruposMateriais = new ArrayList<GrupoMaterialEntidade>()
 
         for (JsonNode meuNoAtual : jsonNodeParaPercorrer) {
