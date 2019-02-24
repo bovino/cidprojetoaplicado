@@ -97,7 +97,7 @@ class DadosGovBrColetorFornecedor extends ColetorBase implements ColetorInterfac
     }
 
     @Override
-    void finalizarColeta() {
+    void finalizarColeta(JsonNode node) {
 
     }
 
@@ -107,12 +107,12 @@ class DadosGovBrColetorFornecedor extends ColetorBase implements ColetorInterfac
     }
 
     @Override
-    void consultaJson() {
-
+    JsonNode consultaJson() {
+        return null
     }
 
     @Override
-    void registrarErrosColeta() {
+    void registrarErrosColeta(String detalhesErro) {
 
     }
 

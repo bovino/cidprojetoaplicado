@@ -84,7 +84,7 @@ class DadosGovBrColetorModalidadeLIcitacao extends ColetorBase implements Coleto
     }
 
     @Override
-    void finalizarColeta() {
+    void finalizarColeta(JsonNode node) {
 
     }
 
@@ -94,12 +94,12 @@ class DadosGovBrColetorModalidadeLIcitacao extends ColetorBase implements Coleto
     }
 
     @Override
-    void consultaJson() {
-
+    JsonNode consultaJson() {
+        return null
     }
 
     @Override
-    void registrarErrosColeta() {
+    void registrarErrosColeta(String detalhesErro) {
 
     }
 
